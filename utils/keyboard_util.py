@@ -1,6 +1,6 @@
 from pynput.keyboard import Listener, KeyCode
 
-
+#listens for keyboard key presses
 def on_press(key):
     global pressed_key
     try:
@@ -16,9 +16,11 @@ def on_press(key):
     else:
          print(f'Error key pressed was:{key}\r\nEnter y/n')
 
+#stops the keyboard listener
 def stop_keyboard_listener():
      return False
 
+#returns the pressed key
 def get_pressed_key():
     with Listener(on_press=on_press) as keybaord_listener:
         keybaord_listener.join()

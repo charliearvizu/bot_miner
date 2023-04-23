@@ -3,9 +3,10 @@ import random
 import time
 from pynput.mouse import Listener
 
-
+#global vars
 click_positions = []
 
+#saves the coords of the first two click to the list
 def on_click(x, y, button, pressed):
     global click_positions
     if pressed:
@@ -13,7 +14,8 @@ def on_click(x, y, button, pressed):
         return False
     if len(click_positions) >= 2:
         return False
-    
+
+#clicks at the given coords with an offset after a certain wait_time     
 def simulate_clicks(positions, click_offset, wait_time):
     for position in positions:
         click_x, click_y = position
@@ -24,6 +26,7 @@ def simulate_clicks(positions, click_offset, wait_time):
         time.sleep(random.uniform(wait_time - 5, wait_time + 5))
         #print(f'click was orginially set at ({click_x},{click_y}) offset click is ({offset_x},{offset_y})')
 
+#simulate_clicks funtion modified to work with multiprocessing
 def mp_simmulate_clicks(click_x, click_y, click_offset, wait_time):
         offset_x = click_x + random.randint(-click_offset, click_offset)
         offset_y = click_y + random.randint(-click_offset, click_offset)
@@ -31,7 +34,7 @@ def mp_simmulate_clicks(click_x, click_y, click_offset, wait_time):
         pyautogui.click()
         time.sleep(random.uniform(wait_time - 30, wait_time + 30))
 
-
+#starts the listener
 def record_clicks():
     global click_positions
     click_positions = []
@@ -45,11 +48,12 @@ def record_clicks():
 
     return click_positions
 
-
+#performs saved clicks
 def start_mining(click_offset, wait_time, positions):
     simulate_clicks(positions, click_offset, wait_time)
 
 
+#multiprocessing funtion that will continuously perform saved clicks until a false is recieved
 def mp_start_mining(event, coords, click_offset, wait_time):
     while not event.is_set():
         for position in coords:

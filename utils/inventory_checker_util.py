@@ -4,13 +4,16 @@ import mss
 import time
 from pynput import mouse
 
+#global list
 points = []
 
+#takes screenshot of specified screen coordinates
 def get_screenshot(coords):
     with mss.mss() as sct:
         screenshot = np.array(sct.grab(coords))
     return cv2.cvtColor(screenshot, cv2.COLOR_RGB2GRAY)
 
+#adds the first two click coordinates to the list
 def on_click(x, y, button, pressed):
     global points
     if pressed:
@@ -18,7 +21,8 @@ def on_click(x, y, button, pressed):
         return False
     if len(points) >= 2:
         return False
-    
+
+#sets the top left and bottom right coordinates for screenshot capture   
 def set_coords_for_screenshot():
     print("Click the top left corner of the area you want to capture.")
     with mouse.Listener(on_click=on_click) as listener:
@@ -31,6 +35,8 @@ def set_coords_for_screenshot():
     coords = (*top_left, *bottom_right)
     return coords
 
+#compares initial_creenshot to new screenshot taken at the given coords and compares the to for any changes
+#defualt tolerance is set a 10 if not given one
 def check_change_screenshot_area(coords, initial_screenshot, tolerance=10):
     screenshot = get_screenshot(coords)
     #initial_rezied = cv2.resize(initial_screenshot, (screenshot_gray.shape[1], screenshot_gray.shape[0]))
@@ -46,10 +52,12 @@ def check_change_screenshot_area(coords, initial_screenshot, tolerance=10):
         print("No change detected.")
     # Wait for a short amount of time before taking the next screenshot
 
-def mp_check_change_screenshot_area(event, coords, initial_screenshot, tolerance):
+#multi process function that continuously calls check_change_screenshot_area
+#if a True is returned by check_change_screenshot_area the multip process will exit
+def mp_check_change_screenshot_area(event, coords, initial_screenshot, tolerance, mp_wait_time):
     while True:
         change = check_change_screenshot_area(coords, initial_screenshot, tolerance)
-        time.sleep(45)
+        time.sleep(mp_wait_time)
         if change == True:
             print('inventory is full')
             event.set()
