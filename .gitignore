@@ -1,0 +1,5 @@
+.env
+inventory_screenshots/
+moves_list/
+rock_coords/
+utils/__pycache__
