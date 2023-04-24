@@ -20,6 +20,9 @@ def on_click(x, y, button, pressed):
             is_recording = False
             print('Stopped Recording')
             return False
+        elif button == Button.right:
+            print('Right button clicked')
+            events.append(('click', x,y, time.time()))
 
 #appends the time and postion traveled between left clicks
 def on_move(x, y):
