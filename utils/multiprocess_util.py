@@ -14,5 +14,6 @@ def start_multiprocess(inital_screenshot_coords, inital_screenshot, tolerance, r
 
     p1.join()
     p2.join()
+    return True
 
 

@@ -43,24 +43,23 @@ def check_change_screenshot_area(coords, initial_screenshot, tolerance=10):
     diff = cv2.absdiff(initial_screenshot, screenshot)
     thresholded_diff = cv2.threshold(diff, tolerance, 255, cv2.THRESH_BINARY)[1]
     if cv2.countNonZero(thresholded_diff) > 0:
-        print("Change detected!")
         change_detected = True
         return change_detected
         #Update the initial screenshot
         #initial_screenshot_gray = screenshot_gray
     else:
         print("No change detected.")
-    # Wait for a short amount of time before taking the next screenshot
+        return False
 
 #multi process function that continuously calls check_change_screenshot_area
 #if a True is returned by check_change_screenshot_area the multip process will exit
 def mp_check_change_screenshot_area(event, coords, initial_screenshot, tolerance, mp_wait_time):
     while True:
         change = check_change_screenshot_area(coords, initial_screenshot, tolerance)
-        time.sleep(mp_wait_time)
         if change == True:
             print('inventory is full')
             event.set()
             return False
         if event.is_set():
             return False
+        time.sleep(mp_wait_time)

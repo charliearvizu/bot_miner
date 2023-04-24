@@ -44,6 +44,11 @@ def multi_save_recording(sub_dir, file_name, number_replays):
             save_file_as_pkl_locally(sub_dir, file_name_num, events)
             del events[:]
 
+def file_ore_box(sub_dir, file_name):
+    global is_recording, events
+    start_recording()
+    save_file_as_pkl_locally(sub_dir, file_name, events)
+
 #replays the save save left mouse clicks   
 def replay(replay_data):
     mouse = Controller()
